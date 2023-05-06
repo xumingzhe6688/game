@@ -1,4 +1,16 @@
 import random
+def __init__(self, name):
+    self.name = name
+    self.level = 1
+    self.exp = 0
+    self.exp_to_level_up = 0
+    self.hp = 0
+    self.mp = 0
+    self.attack = 0
+    self.defense = 0
+    self.gold = 0
+    self.items = []
+choice = input("请输入选项：").strip()
 
 # 初始化玩家属性
 player = {
@@ -273,9 +285,9 @@ else:
         print("你的最大生命值增加了10点，攻击力和防御力各增加了5点。")
         
 # 玩家使用道具
-elif choice == "3":
+    elif choice == "3":
     # 输出玩家背包中的所有道具
-    print("请选择你要使用的道具：")
+        print("请选择你要使用的道具：")
     for i, item in enumerate(items):
         print("%d. %s" % (i+1, item["name"]))
 
@@ -360,34 +372,35 @@ elif "item" in event:
     item = event["item"]
     print("你发现了一个%s。" % item["name"])
 
-    # 处理道具事件
-    if item["name"] == "草药":
-        # 确保玩家的生命值不超过100
-        player["hp"] = min(100, player["hp"] + item["heal_amount"])
-        print("你使用了草药，恢复了%d点生命值。" % item["heal_amount"])
-    elif item["name"] == "魔法药水":
-        # 确保玩家的魔法值不超过50
-        player["mp"] = min(50, player["mp"] + item["mp_restore_amount"])
-        print("你使用了魔法药水，恢复了%d点魔法值。" % item["mp_restore_amount"])
-    elif item["name"] == "铁剑":
-        player["attack"] += item["attack_increase"]
-        print("你装备了铁剑，攻击力提升了%d点。" % item["attack_increase"])
-    elif item["name"] == "铁甲":
-        player["defense"] += item["defense_increase"]
-        print("你穿上了铁甲，防御力提升了%d点。" % item["defense_increase"])
+if choice == "1":
+    # 打印玩家属性
+    print_player_info(player)
+elif choice == "2":
+    # 进入战斗
+    start_battle(player, monster)
+elif choice == "3":
+    # 输出玩家背包中的所有道具
+    print("请选择你要使用的道具：")
+    for i, item in enumerate(items):
+        print("%d. %s" % (i+1, item["name"]))
 
-elif "level_up" in event:
-# 检查玩家是否达到足够的经验才能升级
-if player["exp"] < player["exp_to_level_up"]:
-    print("你还没有达到足够的经验来升级！")
+    # 等待用户输入，并校验输入是否合法
+    item_choice = input("请输入编号：")
+    while not item_choice.isdigit() or int(item_choice) < 1 or int(item_choice) > len(items):
+        print("无效的选择，请重新输入。")
+        item_choice = input("请输入编号：")
+
+    # 将字符串转换为整数
+    item_choice = int(item_choice)
+
+    # 使用选定的道具
+    use_item(player, items[item_choice - 1])
 else:
-    # 提高玩家属性
-    player["hp"] = 100
-    player["mp"] = 50
-    player["attack"] += 5
-    player["defense"] += 5
+    print("无效的选择，请重新输入。")
 
     # 打印玩家当前等级和属性值
+    print("\n恭喜你升级了！当前等级：%d" % player["level"])
+    print("你的最大生命值增加了10点，攻击力和防御力各增加了5点。")
     print("恭喜你升到了%d级！你的属性得到了提升。" % player["level"])
     print("生命值： %d / 魔法值： %d / 攻击力： %d / 防御力： %d" % (player["hp"], player["mp"], player["attack"], player["defense"]))
 
@@ -469,7 +482,7 @@ def use_item(player, item_choice):
         print("无效的选择，请重新输入。")
 
 # 玩家打开背包
-elif choice == "2":
+  elif choice == "2"；
     print("\n你打开了背包，里面有如下物品：")
     for i, item in enumerate(player["items"]):
         print("%d. %s x%d" % (i+1, item["name"], item["quantity"]))
@@ -477,13 +490,15 @@ elif choice == "2":
     item_choice = input("\n请输入你要使用的物品编号，或输入0返回上一级菜单：")
     try:
         item_choice = int(item_choice)
-        use_item(player, item_choice)
     except ValueError:
         print("无效的选择，请重新输入。")
         continue
 
     if item_choice == 0:
         continue
+
+    # 使用选定的道具
+    use_item(player, player["items"][item_choice - 1])
 
 # 玩家查看地图
 elif choice == "3":
